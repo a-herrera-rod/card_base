@@ -3,6 +3,7 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'components/enemy.dart';
 import 'components/player.dart';
 
 class GameController extends Game{
@@ -10,6 +11,7 @@ class GameController extends Game{
   Size screenSize;
   double tileSize;
   Player player;
+  Enemy enemy;
 
   GameController() {
     initialize();
@@ -18,6 +20,7 @@ class GameController extends Game{
   void initialize() async {
     resize(await Flame.util.initialDimensions());
     player = Player(this);
+    enemy = Enemy(this, 200, 200);
   }
 
   void render(Canvas c){
@@ -26,10 +29,12 @@ class GameController extends Game{
     c.drawRect(background, backgroundPaint);
 
     player.render(c);
+    enemy.render(c);
   }
 
   void update(double t){
-
+    enemy.update(t);
+    player.update(t);
   }
 
   void resize(Size size){
@@ -39,5 +44,6 @@ class GameController extends Game{
 
   void onTapDown(TapDownDetails d) {
     print(d.globalPosition);
+    enemy.health--;
   }
 }
