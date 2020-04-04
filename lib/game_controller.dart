@@ -1,32 +1,31 @@
 import 'dart:math';
 import 'dart:ui';
-import 'package:card_base/components/highscore_text.dart';
-import 'package:card_base/components/start_text.dart';
-import 'package:card_base/enemy_spawner.dart';
+import 'package:card_base/components/card.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'components/enemy.dart';
-import 'components/health_bar.dart';
+import 'components/deck.dart';
 import 'components/player.dart';
-import 'components/score_text.dart';
+import 'components/start_text.dart';
 import 'game_state.dart';
 
 class GameController extends Game{
   final SharedPreferences storage;
+  Deck deck;
+  Card card;
   Random rand;
   Size screenSize;
   double tileSize;
   Player player;
-  List<Enemy> enemies;
-  HealthBar healthBar;
-  EnemySpawner enemySpawner;
+  //List<Enemy> enemies;
+  //HealthBar healthBar;
+  //EnemySpawner enemySpawner;
   int score;
-  ScoreText scoreText;
+  //ScoreText scoreText;
   GameState state;
-  HighscoreText highscoreText;
+  //HighscoreText highscoreText;
   StartText startText;
 
   GameController(this.storage) {
@@ -37,13 +36,15 @@ class GameController extends Game{
     resize(await Flame.util.initialDimensions());
     state = GameState.menu;
     rand = Random();
-    player = Player(this);
-    enemies = List<Enemy>();
-    healthBar = HealthBar(this);
-    enemySpawner = EnemySpawner(this);
-    score = 0;
-    scoreText = ScoreText(this);
-    highscoreText = HighscoreText(this);
+    //player = Player(this);
+    deck = Deck(this);
+    card = Card(this,1);
+    //enemies = List<Enemy>();
+    //healthBar = HealthBar(this);
+    //enemySpawner = EnemySpawner(this);
+    //score = 0;
+    //scoreText = ScoreText(this);
+    //highscoreText = HighscoreText(this);
     startText = StartText(this);
   }
 
@@ -52,31 +53,37 @@ class GameController extends Game{
     Paint backgroundPaint = Paint()..color = Color(0xFFFAFAFA);
     c.drawRect(background, backgroundPaint);
 
-    player.render(c);
+    //player.render(c);
 
     if (state == GameState.menu){
       startText.render(c);
-      highscoreText.render(c);
+      //highscoreText.render(c);
     }
     else if (state == GameState.playing) {
-      enemies.forEach((Enemy enemy) => enemy.render(c));
-      scoreText.render(c);
-      healthBar.render(c);
+      deck.render(c);
+      if (card.inPlay){
+        card.render(c);
+      }
+      //enemies.forEach((Enemy enemy) => enemy.render(c));
+      //scoreText.render(c);
+      //healthBar.render(c);
     }
   }
 
   void update(double t){
     if (state == GameState.menu){
-      startText.update(t);
-      highscoreText.update(t);
+     startText.update(t);
+      /*highscoreText.update(t);*/
     }
     else if (state == GameState.playing) {
-      enemySpawner.update(t);
+      deck.update(t);
+      card.update(t);
+      /*enemySpawner.update(t);
       enemies.forEach((Enemy enemy) => enemy.update(t));
       enemies.removeWhere((Enemy enemy) => enemy.isDead);
       player.update(t);
       scoreText.update(t);
-      healthBar.update(t);
+      healthBar.update(t);*/
     }
   }
 
@@ -90,15 +97,20 @@ class GameController extends Game{
       state = GameState.playing;
     }
     else if (state == GameState.playing){
-      enemies.forEach((Enemy enemy) {
+      deck.onTapDown();
+      /*enemies.forEach((Enemy enemy) {
         if (enemy.enemyRect.contains(d.globalPosition)){
           enemy.onTapDown();
         }
-      });
+      });*/
     }
   }
 
-  void spawnEnemy() {
+  void showCard(Card _card){
+    card = _card;
+  }
+
+ /* void spawnEnemy() {
     double x, y;
     switch (rand.nextInt(4)){
       case 0: //Top
@@ -119,5 +131,5 @@ class GameController extends Game{
         break;
     }
     enemies.add(Enemy(this, x, y));
-  }
+  }*/
 }

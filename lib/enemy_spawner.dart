@@ -1,4 +1,4 @@
-import 'package:card_base/game_controller.dart';
+/*import 'package:card_base/game_controller.dart';
 
 import 'components/enemy.dart';
 
@@ -22,7 +22,7 @@ class EnemySpawner {
   }
 
   update (double t){
-    int now = DateTime.now().millisecondsSinceEpoch;
+    /*int now = DateTime.now().millisecondsSinceEpoch;
     if (gameController.enemies.length < maxEnemies && now >= nextSpawn) {
         gameController.spawnEnemy();
         if (currentInterval > minSpawnInterval){
@@ -30,6 +30,8 @@ class EnemySpawner {
           currentInterval -= (currentInterval * 0.1).toInt();
         }
         nextSpawn = now + currentInterval;
-    }
+    }*/
   }
 }
+
+*/

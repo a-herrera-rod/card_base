@@ -1,4 +1,4 @@
-import 'package:card_base/game_controller.dart';
+/*import 'package:card_base/game_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
@@ -35,3 +35,4 @@ class HighscoreText {
       );
   }
 }
+*/
