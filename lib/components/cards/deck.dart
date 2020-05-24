@@ -56,14 +56,14 @@ class Deck extends SpriteComponent {
 
   void getAllCards() {
     for (var name in BaseSet) {
-      cards.push(Card(gameController, name));
+      cards.push(Card(gameController, name, true));
     }
   }
 
   Card take() {
     if (cards.isNotEmpty) {
       var card = cards.pop();
-      card.inPlay = true;
+      card.cover = false;
       return card;
     }
     return null;

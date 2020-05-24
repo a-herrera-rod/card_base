@@ -21,6 +21,14 @@ class TurnSequence {
     }
   }
 
+  void addToPrizes() {
+    for (var i = 0; i < gameController.prizes.maxCards; i++) {
+      var card = gameController.deck.take();
+      card.cover = true;
+      gameController.prizes.addCard(card);
+    }
+  }
+
   void addToBench(Card card) {
     gameController.bench.addCard(card);
   }

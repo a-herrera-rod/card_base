@@ -1,23 +1,28 @@
 import 'dart:ui';
 
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 
 import '../../game_controller.dart';
 import 'package:flutter/painting.dart';
 
-class Card extends SpriteComponent {
+class Card extends PositionComponent with Resizable {
   final GameController gameController;
   Offset position;
 
   final String value;
-  bool inPlay = true;
-  Rect cardRect;
+  bool cover;
+  CardCover cardCover;
+  CardFace cardFace;
 
-  Card(this.gameController, this.value)
-      : super.fromSprite(gameController.tileSize, gameController.tileSize * 1.7,
-            new Sprite('cards/' + value + '.png'));
+  Card(this.gameController, this.value, this.cover)
+      : cardCover =
+            CardCover(gameController.tileSize, gameController.tileSize * 1.7),
+        cardFace = CardFace(
+            gameController.tileSize, gameController.tileSize * 1.7, value),
+        super();
 
   void setPosition(double _x, double _y) {
     this.x = _x;
@@ -29,15 +34,25 @@ class Card extends SpriteComponent {
     this.y += _y;
   }
 
-  /*@override
+  PositionComponent get card {
+    return cover ? cardCover : cardFace;
+  }
+
+  void flip() {
+    cover = !cover;
+  }
+
+  @override
   void render(Canvas c) {
-    //Sprite cardImg = Sprite('cards/' + gameController.card.value.toString() + '.png');
-    //super.sprite = new Sprite('system/cover.png', width: 100, height: 200);
-    if (this.inPlay) {
-      super.render(c);
-    }
-    //cardImg.renderRect(c, this.toRect());
-  }*/
+    card.render(c);
+  }
+
+  @override
+  void update(double t) {
+    card.x = x;
+    card.y = y;
+    card.update(t);
+  }
 
   /*void update(double t){
     if (inPlay){
@@ -59,4 +74,14 @@ class Card extends SpriteComponent {
       }
     }
   }*/
+}
+
+class CardCover extends SpriteComponent {
+  CardCover(double width, double height)
+      : super.fromSprite(width, height, new Sprite('cards/cover.png'));
+}
+
+class CardFace extends SpriteComponent {
+  CardFace(double width, double height, String image)
+      : super.fromSprite(width, height, new Sprite('cards/' + image + '.png'));
 }

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:card_base/enums/card_display.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/composed_component.dart';
 import 'package:flame/components/mixins/has_game_ref.dart';
@@ -13,18 +14,20 @@ import 'card.dart';
 abstract class CardsArray extends PositionComponent
     with HasGameRef, Tapable, ComposedComponent {
   final GameController gameController;
-  double spacing;
+  final double spacing;
+  final ArrayDisplay display;
   List<Card> cards;
 
-  CardsArray(this.gameController, double x, double y, this.spacing) : super() {
+  CardsArray(
+      this.gameController, double x, double y, this.spacing, this.display)
+      : super() {
     this.x = x;
     this.y = y;
     cards = List();
   }
 
   void addCard(Card card) {
-    card.setPosition(
-        this.x + (gameController.tileSize + spacing) * cards.length, this.y);
+    setCardPosition(card);
     cards.add(card);
     components.add(card);
   }
@@ -37,6 +40,22 @@ abstract class CardsArray extends PositionComponent
 
   bool empty() {
     return cards.length == 0;
+  }
+
+  void setCardPosition(Card card) {
+    switch (display) {
+      case ArrayDisplay.row:
+        card.setPosition(
+            this.x + (gameController.tileSize + spacing) * cards.length,
+            this.y);
+        break;
+      case ArrayDisplay.prizes:
+        card.setPosition(
+            this.x + (gameController.tileSize + spacing) * (cards.length % 2),
+            this.y +
+                gameController.tileSize * 2.2 * (cards.length / 2).floor());
+        break;
+    }
   }
 
   //@override

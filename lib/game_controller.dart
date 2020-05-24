@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'components/cards/active.dart';
 import 'components/cards/bench.dart';
+import 'components/cards/prizes.dart';
 import 'components/system/background.dart';
 import 'components/cards/card.dart';
 import 'components/cards/deck.dart';
@@ -29,6 +30,7 @@ class GameController extends BaseGame {
   Hand hand;
   Bench bench;
   Active activeCard;
+  Prizes prizes;
   TurnSequence turn;
   Random rand;
   Size screenSize;
@@ -58,7 +60,13 @@ class GameController extends BaseGame {
     background = Background(this);
     setElements(size);
 
-    this..add(startText)..add(hand)..add(bench)..add(activeCard)..add(deck);
+    this
+      ..add(startText)
+      ..add(hand)
+      ..add(bench)
+      ..add(activeCard)
+      ..add(prizes)
+      ..add(deck);
     //player = Player(this);
     //card = Card(this, 'cover');
     //enemies = List<Enemy>();
@@ -73,11 +81,13 @@ class GameController extends BaseGame {
 
   void setElements(Size size) {
     deck = Deck(this);
-    hand = Hand(this, 10, this.screenSize.height - tileSize * 1.8, 5);
-    bench = Bench(this, this.screenSize.width * 0.2 + 3,
-        this.screenSize.height * 0.74, 3);
+    hand = Hand(this, 10, this.screenSize.height - tileSize * 1.8);
+    bench = Bench(
+        this, this.screenSize.width * 0.2 + 3, this.screenSize.height * 0.74);
     activeCard =
         Active(this, this.screenSize.width * 4, this.screenSize.height * 0.55);
+    prizes = Prizes(
+        this, this.screenSize.width * 0.05, this.screenSize.height * 0.47);
     turn = TurnSequence(this);
 
     startText = new TextComponent('Start', config: regular)
@@ -102,6 +112,7 @@ class GameController extends BaseGame {
       hand.render(c);
       bench.render(c);
       activeCard.render(c);
+      prizes.render(c);
       deck.render(c);
 
       /*if (card.inPlay) {
@@ -125,9 +136,13 @@ class GameController extends BaseGame {
       if (bench.empty()) {
         turn.addToBench1(null);
       }
+      if (prizes.empty()) {
+        turn.addToPrizes();
+      }
       deck.update(t);
       hand.update(t);
       bench.update(t);
+      prizes.update(t);
       activeCard.update(t);
       //card.update(t);
       /*enemySpawner.update(t);
